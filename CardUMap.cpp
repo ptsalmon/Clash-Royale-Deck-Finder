@@ -2,8 +2,8 @@
 
 void CardUMap::addWin(std::string card, std::string deckStr)
 {
-	if (mp.count(card) == 1)
-		mp.find(card)->second->addDeckWin(deckStr);
+	if (mp.hasKey(card))
+		mp.value(card)->addDeckWin(deckStr);
 	else {
 		DecksWCard* deck = new DecksWCard(deckStr, true);
 		mp.insert({ card, deck });
@@ -12,8 +12,8 @@ void CardUMap::addWin(std::string card, std::string deckStr)
 
 void CardUMap::addLoss(std::string card, std::string deckStr)
 {
-	if (mp.count(card) == 1)
-		mp.find(card)->second->addDeckLoss(deckStr);
+	if (mp.hasKey(card))
+		mp.value(card)->addDeckLoss(deckStr);
 	else {
 		DecksWCard* deck = new DecksWCard(deckStr, false);
 		mp.insert({ card, deck });
@@ -25,9 +25,8 @@ std::string CardUMap::bestDeckID(std::string card)
 	if (mp.empty())
 		return "";
 
-	auto found = mp.find(card);
-	if (found != mp.end())
-		return found->second->getBestDeckID();
+	if (mp.hasKey(card))
+		return mp.value(card)->getBestDeckID();
 	return "";
 }
 
@@ -36,9 +35,8 @@ double CardUMap::bestDeckWinrate(std::string card)
 	if (mp.empty())
 		return 0.0;
 
-	auto found = mp.find(card);
-	if (found != mp.end())
-		return found->second->getBestDeckWinrate();
+	if (mp.hasKey(card))
+		return mp.value(card)->getBestDeckWinrate();
 	return 0.0;
 }
 
@@ -47,8 +45,7 @@ int CardUMap::bestDeckGameCount(std::string card)
 	if (mp.empty())
 		return 0;
 
-	auto found = mp.find(card);
-	if (found != mp.end())
-		return found->second->getBestDeckGameCount();
+	if (mp.hasKey(card))
+		return mp.value(card)->getBestDeckGameCount();
 	return 0;
 }

@@ -1,10 +1,10 @@
 #pragma once
 #include <set>
 #include <string>
-#include "unorderedMap.h"
+#include <unordered_map>
 
 
-class CardUMap {
+class CardUMapSTL {
 	struct DecksWCard {
 
 		struct stats {
@@ -39,38 +39,27 @@ class CardUMap {
 				return numOfGames;
 			}
 
-			inline bool stats::operator>(const stats& rhs) const 
-			{
+			inline bool stats::operator>(const stats& rhs) const {
 				if (this->getWinrate() == rhs.getWinrate())
 					return this->numOfGames > rhs.numOfGames;
 
 				return this->getWinrate() > rhs.getWinrate();
 			}
 
-			inline bool DecksWCard::stats::operator<(const stats& rhs) const 
-			{
+			inline bool DecksWCard::stats::operator<(const stats& rhs) const {
 				if (this->getWinrate() == rhs.getWinrate())
 					return this->numOfGames < rhs.numOfGames;
 
 				return this->getWinrate() < rhs.getWinrate();
 			}
 
-			inline bool DecksWCard::stats::operator==(const stats& rhs) const 
-			{
+			inline bool DecksWCard::stats::operator==(const stats& rhs) const {
 				return this->getWinrate() == rhs.getWinrate();
-			}
-
-			inline bool stats::compare(const stats* rhs) const
-			{
-				if (this->getWinrate() == rhs->getWinrate())
-					return this->numOfGames > rhs->numOfGames;
-
-				return this->getWinrate() > rhs->getWinrate();
 			}
 		};
 
 
-		unorderedMap<stats*> deckList;
+		std::unordered_map<std::string, stats*> deckList;
 		std::string bestDeck = "";
 
 		DecksWCard() {}
@@ -85,8 +74,8 @@ class CardUMap {
 
 		inline void addDeckWin(std::string deckStr)
 		{
-			if (deckList.hasKey(deckStr))
-				deckList.value(deckStr)->addWin();
+			if (deckList.count(deckStr) == 1)
+				deckList.find(deckStr)->second->addWin();
 			else {
 				stats* deckStats = new stats(true);
 				deckList.insert({ deckStr, deckStats });
@@ -95,9 +84,9 @@ class CardUMap {
 
 		inline void addDeckLoss(std::string deckStr)
 		{
-			if (deckList.hasKey(deckStr))
+			if (deckList.count(deckStr) == 1)
 			{
-				deckList.value(deckStr)->addLoss();
+				deckList.find(deckStr)->second->addLoss();
 			}
 			else {
 				stats* deckStats = new stats(false);
@@ -105,61 +94,74 @@ class CardUMap {
 			}
 		}
 
-		inline std::string CardUMap::DecksWCard::getBestDeckID()
+		inline std::string CardUMapSTL::DecksWCard::getBestDeckID()
 		{
 			if (deckList.empty())
 				return "";
 
 			if (bestDeck == "")
 			{
-				bestDeck = deckList.getMax().first;
-				return bestDeck;
+				auto iter = deckList.begin();
+				stats max = (*iter->second);
+				auto maxIt = deckList.begin();
+				++iter;
+				while (iter != deckList.end())
+				{
+					if ((*iter->second) > max)
+					{
+						max = (*iter->second);
+						maxIt = iter;
+					}
+					++iter;
+				}
+				return maxIt->first;
 			}
 
 			return bestDeck;
 		}
 
-		inline double CardUMap::DecksWCard::getBestDeckWinrate()
+		inline double CardUMapSTL::DecksWCard::getBestDeckWinrate()
 		{
 			std::string best;
 			if (bestDeck == "")
 				best = this->getBestDeckID();
 
-			if (deckList.hasKey(best))
+			auto found = deckList.find(best);
+			if (found != deckList.end())
 			{
-				return deckList.value(best)->getWinrate();
+				return found->second->getWinrate();
 			}
 			return 0.0;
 		}
 
-		inline int CardUMap::DecksWCard::getBestDeckGameCount()
+		inline int CardUMapSTL::DecksWCard::getBestDeckGameCount()
 		{
 			std::string best;
 			if (bestDeck == "")
 				best = this->getBestDeckID();
 
-			if (deckList.hasKey(best))
+			auto found = deckList.find(best);
+			if (found != deckList.end())
 			{
-				return deckList.value(best)->getNumGames();
+				return found->second->getNumGames();
 			}
 			return 0;
 		}
 	};
 
 
-	unorderedMap<DecksWCard*> mp;
+	std::unordered_map<std::string, DecksWCard*> mp;
 	std::string bestDeck;
 
 public:
 
-	CardUMap() {};
+	CardUMapSTL() {};
 
-	
 	void addWin(std::string card, std::string deckStr);
 	void addLoss(std::string card, std::string deckStr);
 
 	std::string bestDeckID(std::string card);
 	double bestDeckWinrate(std::string card);
 	int bestDeckGameCount(std::string card);
-	
+
 };
