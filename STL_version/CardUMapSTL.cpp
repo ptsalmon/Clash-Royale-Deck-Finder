@@ -1,8 +1,15 @@
+#include "pch.h"
 #include "CardUMapSTL.h"
+
+
+bool CardUMapSTL::hasCard(string card)
+{
+	return mp.count(card);
+}
 
 void CardUMapSTL::addWin(std::string card, std::string deckStr)
 {
-	if (mp.count(card) == 1)
+	if (mp.count(card))
 		mp.find(card)->second->addDeckWin(deckStr);
 	else {
 		DecksWCard* deck = new DecksWCard(deckStr, true);
@@ -12,7 +19,7 @@ void CardUMapSTL::addWin(std::string card, std::string deckStr)
 
 void CardUMapSTL::addLoss(std::string card, std::string deckStr)
 {
-	if (mp.count(card) == 1)
+	if (mp.count(card))
 		mp.find(card)->second->addDeckLoss(deckStr);
 	else {
 		DecksWCard* deck = new DecksWCard(deckStr, false);

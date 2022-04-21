@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 
+using namespace std;
 
 class CardUMapSTL {
 	struct DecksWCard {
@@ -156,6 +157,8 @@ class CardUMapSTL {
 public:
 
 	CardUMapSTL() {};
+
+	bool hasCard(string card);
 
 	void addWin(std::string card, std::string deckStr);
 	void addLoss(std::string card, std::string deckStr);

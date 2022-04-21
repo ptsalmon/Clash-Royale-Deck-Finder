@@ -12,7 +12,7 @@ class CardMapSTL {
 			int numOfGames;
 			stats() : numOfWins(0), numOfGames(0) {};
 			stats(int numOfWins_, int numOfGames_) : numOfWins(numOfWins_), numOfGames(numOfGames_) {};
-			stats(bool win) 
+			stats(bool win)
 			{
 				numOfWins = 0;
 				numOfGames = 0;
@@ -64,7 +64,7 @@ class CardMapSTL {
 
 		DecksWCard() {}
 
-		DecksWCard(std::string deck, bool win) 
+		DecksWCard(std::string deck, bool win)
 		{
 			if (win)
 				this->addDeckWin(deck);
@@ -90,7 +90,7 @@ class CardMapSTL {
 			}
 			else {
 				stats* deckStats = new stats(false);
-				deckList.insert({ deckStr, deckStats});
+				deckList.insert({ deckStr, deckStats });
 			}
 		}
 
@@ -98,7 +98,7 @@ class CardMapSTL {
 		{
 			if (deckList.empty())
 				return "";
-			
+
 			if (bestDeck == "")
 			{
 				auto iter = deckList.begin();
@@ -116,14 +116,14 @@ class CardMapSTL {
 				}
 				return maxIt->first;
 			}
-			
+
 			return bestDeck;
 		}
 
 		inline double CardMapSTL::DecksWCard::getBestDeckWinrate()
 		{
 			std::string best;
-			if(bestDeck == "")
+			if (bestDeck == "")
 				best = this->getBestDeckID();
 
 			auto found = deckList.find(best);
@@ -149,7 +149,6 @@ class CardMapSTL {
 		}
 	};
 
-
 	std::map<std::string, DecksWCard*> mp;
 	std::string bestDeck;
 
@@ -157,11 +156,13 @@ public:
 
 	CardMapSTL() {};
 
+	bool hasCard(std::string cardName);
+
 	void addWin(std::string card, std::string deckStr);
 	void addLoss(std::string card, std::string deckStr);
 
 	std::string bestDeckID(std::string card);
 	double bestDeckWinrate(std::string card);
 	int bestDeckGameCount(std::string card);
-	
+
 };

@@ -1,4 +1,10 @@
+#include "pch.h"
 #include "CardMapSTL.h"
+
+bool CardMapSTL::hasCard(string cardName)
+{
+	return mp.count(cardName);
+}
 
 void CardMapSTL::addWin(std::string card, std::string deckStr)
 {
