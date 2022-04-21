@@ -1,10 +1,10 @@
 #pragma once
+#include <map>
 #include <set>
 #include <string>
-#include "OrderedMap.h"
 
 
-class CardMap {
+class CardMapSTL {
 	struct DecksWCard {
 
 		struct stats {
@@ -12,7 +12,7 @@ class CardMap {
 			int numOfGames;
 			stats() : numOfWins(0), numOfGames(0) {};
 			stats(int numOfWins_, int numOfGames_) : numOfWins(numOfWins_), numOfGames(numOfGames_) {};
-			stats(bool win)
+			stats(bool win) 
 			{
 				numOfWins = 0;
 				numOfGames = 0;
@@ -39,43 +39,32 @@ class CardMap {
 				return numOfGames;
 			}
 
-			inline bool stats::operator>(const stats& rhs) const
-			{
+			inline bool stats::operator>(const stats& rhs) const {
 				if (this->getWinrate() == rhs.getWinrate())
 					return this->numOfGames > rhs.numOfGames;
 
 				return this->getWinrate() > rhs.getWinrate();
 			}
 
-			inline bool DecksWCard::stats::operator<(const stats& rhs) const
-			{
+			inline bool DecksWCard::stats::operator<(const stats& rhs) const {
 				if (this->getWinrate() == rhs.getWinrate())
 					return this->numOfGames < rhs.numOfGames;
 
 				return this->getWinrate() < rhs.getWinrate();
 			}
 
-			inline bool DecksWCard::stats::operator==(const stats& rhs) const
-			{
+			inline bool DecksWCard::stats::operator==(const stats& rhs) const {
 				return this->getWinrate() == rhs.getWinrate();
-			}
-
-			inline bool stats::compare(const stats* rhs) const
-			{
-				if (this->getWinrate() == rhs->getWinrate())
-					return this->numOfGames > rhs->numOfGames;
-
-				return this->getWinrate() > rhs->getWinrate();
 			}
 		};
 
 
-		OrderedMap<std::string, stats*> deckList;
+		std::map<std::string, stats*> deckList;
 		std::string bestDeck = "";
 
 		DecksWCard() {}
 
-		DecksWCard(std::string deck, bool win)
+		DecksWCard(std::string deck, bool win) 
 		{
 			if (win)
 				this->addDeckWin(deck);
@@ -85,75 +74,88 @@ class CardMap {
 
 		inline void addDeckWin(std::string deckStr)
 		{
-			if (deckList.hasKey(deckStr))
-				deckList.getValue(deckStr)->addWin();
+			if (deckList.count(deckStr) == 1)
+				deckList.find(deckStr)->second->addWin();
 			else {
 				stats* deckStats = new stats(true);
-				deckList.insert(deckStr, deckStats );
+				deckList.insert({ deckStr, deckStats });
 			}
 		}
 
 		inline void addDeckLoss(std::string deckStr)
 		{
-			if (deckList.hasKey(deckStr))
+			if (deckList.count(deckStr) == 1)
 			{
-				deckList.getValue(deckStr)->addLoss();
+				deckList.find(deckStr)->second->addLoss();
 			}
 			else {
 				stats* deckStats = new stats(false);
-				deckList.insert( deckStr, deckStats );
+				deckList.insert({ deckStr, deckStats});
 			}
 		}
 
-		inline std::string CardMap::DecksWCard::getBestDeckID()
+		inline std::string CardMapSTL::DecksWCard::getBestDeckID()
 		{
 			if (deckList.empty())
 				return "";
-
+			
 			if (bestDeck == "")
 			{
-				bestDeck = deckList.getMax().first;
-				return bestDeck;
+				auto iter = deckList.begin();
+				stats max = (*iter->second);
+				auto maxIt = deckList.begin();
+				++iter;
+				while (iter != deckList.end())
+				{
+					if ((*iter->second) > max)
+					{
+						max = (*iter->second);
+						maxIt = iter;
+					}
+					++iter;
+				}
+				return maxIt->first;
 			}
-
+			
 			return bestDeck;
 		}
 
-		inline double CardMap::DecksWCard::getBestDeckWinrate()
+		inline double CardMapSTL::DecksWCard::getBestDeckWinrate()
 		{
 			std::string best;
-			if (bestDeck == "")
+			if(bestDeck == "")
 				best = this->getBestDeckID();
 
-			if (deckList.hasKey(best))
+			auto found = deckList.find(best);
+			if (found != deckList.end())
 			{
-				return deckList.getValue(best)->getWinrate();
+				return found->second->getWinrate();
 			}
 			return 0.0;
 		}
 
-		inline int CardMap::DecksWCard::getBestDeckGameCount()
+		inline int CardMapSTL::DecksWCard::getBestDeckGameCount()
 		{
 			std::string best;
 			if (bestDeck == "")
 				best = this->getBestDeckID();
 
-			if (deckList.hasKey(best))
+			auto found = deckList.find(best);
+			if (found != deckList.end())
 			{
-				return deckList.getValue(best)->getNumGames();
+				return found->second->getNumGames();
 			}
 			return 0;
 		}
 	};
 
 
-	OrderedMap<std::string, DecksWCard*> mp;
+	std::map<std::string, DecksWCard*> mp;
 	std::string bestDeck;
 
 public:
 
-	CardMap() {};
-
+	CardMapSTL() {};
 
 	void addWin(std::string card, std::string deckStr);
 	void addLoss(std::string card, std::string deckStr);
@@ -161,5 +163,5 @@ public:
 	std::string bestDeckID(std::string card);
 	double bestDeckWinrate(std::string card);
 	int bestDeckGameCount(std::string card);
-
+	
 };
