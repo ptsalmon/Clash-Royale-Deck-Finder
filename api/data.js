@@ -4,7 +4,7 @@ const { MIN_VALUE } = require('long')
 const { syncBuiltinESMExports } = require('module')
 const request = require('request')
 const { pathToFileURL } = require('url')
-const key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImE4YmIyN2Y1LWYxMzgtNGU1Ni1iZjYyLTA1MmNmNTk3MTA4YSIsImlhdCI6MTY1MDMyMDA2Niwic3ViIjoiZGV2ZWxvcGVyL2IwNjA0OTAzLWQzMjItYmZlOC00NjcwLTA1NDkwN2MwZjI0MiIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxMjguMjI3LjEzMC43OSJdLCJ0eXBlIjoiY2xpZW50In1dfQ.f7M7ju7TagdNMShN-p0Fkd-yrlNUP_VcoCdt6LT7RvA8ef1VfFtXcfrqVXpoqNopYtWATttQhn9aBNKcL5H_Ag"
+const key = process.env.KEY
 base = "https://api.clashroyale.com/v1/"
 
 function sleep (time) {
